@@ -9,6 +9,7 @@ import (
 	"sync/atomic"
 	"unicode"
 
+  "github.com/bobappleyard/readline"
 	"github.com/mailgun/godebug/Godeps/_workspace/src/github.com/0xfaded/eval"
 )
 
@@ -391,9 +392,12 @@ var input = bufio.NewScanner(os.Stdin)
 
 // This gets overridden when running in a browser.
 var promptUser = func() (response string, ok bool) {
-	fmt.Print("(godebug) ")
-	if !input.Scan() {
-		return "", false
-	}
-	return input.Text(), true
+  l, err := readline.String("(godebug) ")
+  if err != nil {
+    return "", false
+  }
+  if l != "" {
+    readline.AddHistory(l)
+  }
+	return l, true
 }
